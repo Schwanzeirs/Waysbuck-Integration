@@ -32,6 +32,7 @@ export default function IncomeTransaction() {
 
   return (
     <>
+        {/* <NavbarAdmin/> */}
         <Modal show={show} onHide={handleClose}>
         <div className='d-flex rounded' style={{background: '#F7DADA'}}>
                 <div className='detailTransaction py-2 px-2'>

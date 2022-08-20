@@ -39,7 +39,7 @@ export default function AddProduct() {
 
   return (
     <>
-        <NavbarAdmin/>
+      <NavbarAdmin/>
       <div className='page-add-product justify-content-center'>
         <div className='formPageProduct'>
           <div className='title-product '>

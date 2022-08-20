@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
-import {Button,Modal} from 'react-bootstrap';
+import React, { useState, useContext } from 'react';
+import {Alert, Button, Modal, Form} from 'react-bootstrap';
 import { useNavigate } from 'react-router';
+
+import { useMutation } from 'react-query';
+import { API } from '../config/api';
 import { Usercontext } from '../context/user-context';
 
 function Login() {
@@ -11,73 +14,142 @@ function Login() {
 
   const navigate = useNavigate()
 
-  const [setUser] = React.useContext(Usercontext)
+  const [ state, dispatch ] = useContext(Usercontext)
+
+  const [ message, setMessange ] =useState(null)
   
-  function handleOnSubmit(e) {
-    e.preventDefault();
+  function Switchtoregister() {
+    setShow(false)
+    setShow(true)
+  }
 
-    const email = document.getElementById("email").value
-    let status
-    
-    if (email === "admin@mail.com") {
-      status = "admin"
-      navigate('/admin')
-    } else {
-      status = "customer"
-      navigate ('/home')
-    }
+  const [ form, setForm ] = useState({
+    email: '',
+    password: '',
+  })
   
-    const data = { email, status }
+  const {email, password} = form
 
-    console.log(data);
-
-    setUser({
-      type: 'LOG_IN',
-      payload: data
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name] : e.target.value,
     })
   }
+
+  const handleSubmit = useMutation(async (e) => {
+    try {
+      e.preventDefault()
+
+      const config = {
+        headers: {
+          'Content-type' : 'application/json',
+        }
+      }
+
+    const body = JSON.stringify(form)
+
+    const response = await API.post('/login', body, config)
+
+    if (response?.status === 200) {
+      dispatch({
+        type: 'LOGIN_SUCCSESS',
+        payload : response.data.data
+      })
+      if(response.data.data.status = 'admin'){
+        navigate('/admin')
+      }
+    } else {
+      navigate('/')
+    }
+
+    } catch (error) {
+      const alert = (
+        <Alert variant='danger' className='py1'>
+          failed
+        </Alert>
+      )
+      setMessange(alert)
+      console.log(error)
+    }
+  })
+  // function handleOnSubmit(e) {
+  //   e.preventDefault();
+
+  //   const email = document.getElementById("email").value
+  //   const password = document.getElementById("password").value
+  //   let status
+    
+  //   if (email === "admin@mail.com") {
+  //     status = "admin"
+  //     navigate('/admin')
+  //   } else {
+  //     status = "customer"
+  //     navigate ('/home')
+  //   }
+  
+  //   const data = { email, password ,status }
+
+  //   console.log(data);
+
+  //   setUser({
+  //     type: 'LOG_IN',
+  //     payload: data
+  //   })
+  // }
 
 
 
   return (
     <>
-      <Button variant="primary" className='ms-2 me-2 bg-white border-danger text-danger' onClick={handleShow}>
-        Login
+      <Button variant="danger" className='ms-2 me-5 bg-danger' onClick={handleShow}>
+        Register
       </Button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title className='text-danger'>Login</Modal.Title>
+          <Modal.Title className='text-danger '>Login</Modal.Title>
         </Modal.Header> 
         <Modal.Body>
-        <form className="py2 px1-5 flex-col bg-white br10"
-           onClick={ (e) => e.stopPropagation() }
-           onSubmit={ handleOnSubmit }
-          >
-            <h2 className="mb1-75 txt-red fw700">Register</h2>
-            <input className="modal-input br-red br5 mb1 fs0-9"
-             type="email"
-             id="email" name="email"
-             placeholder="Email"
-            />
-            <input className="modal-input br-red br5 mb1 fs0-9"
-             type="password"
-             id="password" name="password"
-             placeholder="Password"
-            />
-            <input className="modal-input br-red br5 mb2 fs0-9"
-             type="text"
-             id="name" name="name"
-             placeholder="Full Name"
-            />
-            <button className="pt0-3 pb0-5 mb1 bg-red br-none br5 fs0-9 fw500 txt-white"
-             type="submit"
-            >Register</button>
-            <p className="fs0-9 fw500 ta-center">Already have an account ? Click <strong className="cursor-pointer"
-             >Here</strong>
-            </p>
-          </form>
+          asasas
+        <Form onSubmit={(e) => handleSubmit.mutate(e)}>
+            <Form.Group className="mb-3">
+                <Form.Control 
+                className='inputProduct border-danger' 
+                type="email" 
+                placeholder="Email" 
+                name='email'
+                onChange = { handleChange }
+                style={{width : '100%'}}/>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Control 
+                className='inputProduct border-danger' 
+                type="password" 
+                placeholder="Password" 
+                name='password'
+                onChange = { handleChange }
+                style={{width : '100%'}}/>
+            </Form.Group>
+            <Form.Group className="mb-3">
+                <Form.Control className='inputProduct border-danger' type="text" placeholder="Full Name" style={{width : '100%'}}/>
+            </Form.Group>
+            <Button className='float-sm-end bg-danger' variant="danger" type="submit">
+                Login
+            </Button>
+            <div>
+                <p>Already have an account ? klik 
+                  <a onClick={Switchtoregister}><b>here</b> </a> 
+                </p>
+            </div>
+        </Form>
         </Modal.Body>
+        {/* <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+        </Modal.Footer> */}
+        <Login />
       </Modal>
     </>
   );

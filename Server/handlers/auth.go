@@ -14,7 +14,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/go-playground/validator/v10"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -37,14 +36,16 @@ func (h *handlerAuth) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validation := validator.New()
-	err := validation.Struct(request)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
-		json.NewEncoder(w).Encode(response)
-		return
-	}
+	fmt.Println(request)
+
+	// validation := validator.New()
+	// err := validation.Struct(request)
+	// if err != nil {
+	// 	w.WriteHeader(http.StatusBadRequest)
+	// 	response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+	// 	json.NewEncoder(w).Encode(response)
+	// 	return
+	// }
 
 	password, err := bcrypt.HashingPassword(request.Password)
 	if err != nil {
@@ -137,9 +138,10 @@ func (h *handlerAuth) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	loginResponse := authdto.LoginResponse{
-		Name:  user.Name,
-		Email: user.Email,
-		Token: token,
+		Name:   user.Name,
+		Email:  user.Email,
+		Status: user.Status,
+		Token:  token,
 	}
 
 	w.Header().Set("Content-Type", "application/json")

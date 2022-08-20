@@ -29,7 +29,8 @@ export default function Home() {
         </div> */}
         <div className='auth'>
           {/* <NavbarUser/> */}
-        <AuthModal />
+          {state.isLogin === false?<AuthModal/>:<NavbarUser/>}
+        {/* <AuthModal /> */}
         </div>
     <div className=''>
             <Card id='card-main'>
