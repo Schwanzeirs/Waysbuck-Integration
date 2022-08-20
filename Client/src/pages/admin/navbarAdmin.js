@@ -1,4 +1,4 @@
-import React from 'react'
+import { React, useContext } from 'react'
 import { NavDropdown } from 'react-bootstrap';
 import { useNavigate } from 'react-router';
 import logowaysbuck from '../../assets/img/logowaysbuck.png'
@@ -7,11 +7,23 @@ import ProfilePhoto1 from '../../assets/img/profilephoto.png'
 import Group from '../../assets/img/Group.svg'
 import Logout from '../../assets/img/logout1.svg'
 import Topping1 from '../../assets/img/topping1.svg'
+import { Usercontext } from '../../context/user-context'
+
 
 // styling css
 import "../../styles/style.css"
 
 export default function NavbarAdmin() {
+
+  const [state, dispatch] = useContext(Usercontext)
+
+  const logout = () => {
+    console.log(state);
+    dispatch({
+      type: 'LOGOUT'
+    })
+    moving('/')
+  }
   
     const photoProfile = <img className='imgProfile' src={ProfilePhoto1}/> 
     
@@ -31,20 +43,20 @@ export default function NavbarAdmin() {
                 borderRadius:"80px",
                 width:"50px",
                 height:"50px"}} title={photoProfile}>
-                <NavDropdown.Item href="/add-drink">
+                <NavDropdown.Item onClick={() => moving('/add-drink')}>
                   <div className='d-flex'>
                     <img src={Group}/>
                     <p className='mt-3 ms-3 me-5'>Add Product</p>
                   </div>
                 </NavDropdown.Item>
-                <NavDropdown.Item href="/add-toping">
+                <NavDropdown.Item onClick={() => moving('/add-toping')}>
                   <div className='d-flex'>
                     <img src={Topping1}style={{cursor:'pointer'}}/>
                     <p className='mt-3 ms-3 me-5'>Add Topping</p>
                   </div>
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item href="/">
+                <NavDropdown.Item onClick={logout}>
                   <div className='d-flex'>
                     <img src={Logout}style={{cursor:'pointer'}}/>
                     <p className='mt-3 ms-3 me-5 fw-normal'>Logout</p>

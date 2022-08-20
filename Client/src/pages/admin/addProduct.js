@@ -1,27 +1,30 @@
-import React, { useState } from 'react'
-import { Button,Form } from 'react-bootstrap';
-
+import { React, useState } from 'react'
+import { Button,Form, Alert } from 'react-bootstrap';
+import { useNavigate } from 'react-router';
 import NavbarAdmin from './navbarAdmin';
-
-
+import { API } from '../../config/api';
 import '../../styles/addproduct.css'
 import ikonupload from '../../assets/img/ikon-upload.png'
 import Noimg from '../../assets/img/no-photo.jpg'
+import { useMutation } from 'react-query';
 
 
 export default function AddProduct() {
 
+  const navigate = useNavigate();
+
   const [preview, setPreview] = useState(null)
-  const [addProduct, setAddProduct] = useState({
-      name : "",
-      price : "",
-      image : ""
-  })
+
+  const [form, setForm] = useState({
+      title : '',
+      price : '',
+      image : '',
+  });
 
   const handleOnChange = (e) => {
-      setAddProduct(({
-          ...addProduct,
-          [e.target.name]:e.target.type === 'file' ? e.target.files : e.target.value
+        setForm(({
+          ...form,
+          [e.target.name]:e.target.type === 'file' ? e.target.files : e.target.value,
         }))
 
         if (e.target.type === 'file') {
@@ -30,12 +33,36 @@ export default function AddProduct() {
         }
       };
 
-  const handleOnSubmit = (e) => {
-      e.preventDefault()
-      
-      alert('Data added sucesfully!')
-  }
-  console.log(addProduct);
+  const handleOnSubmit = useMutation(async (e) => {
+    try{
+      e.preventDefault();
+
+      const config = {
+        headers: {
+          'Content-type': 'multipart/form-data',
+        }
+      };
+
+      const formData = new FormData();
+      formData.set('title', form.title)
+      formData.set('price', form.price)
+      formData.set('image', form.image[0], form.image[0].name)
+
+      console.log(form);
+
+      const response = await API.post('/product', formData, config)
+      console.log(response);
+
+      navigate('/add-drink');
+    } catch (error) {
+      const alert = (
+        <Alert variant="danger" className="py-1">
+          Failed
+        </Alert>
+      );
+      console.log(error);
+    }
+  })
 
   return (
     <>
@@ -46,9 +73,9 @@ export default function AddProduct() {
             <h2>Product</h2>
           </div>
               <div className='form-addProduct ps-4 py-4 '>
-                  <Form onSubmit={handleOnSubmit}>
+                  <Form onSubmit={ (e) => handleOnSubmit.mutate(e)}>
                       <Form.Group className="mb-3" >
-                          <Form.Control className='inputProduct' name='name' type="text" onChange={handleOnChange} placeholder="Name Product" />
+                          <Form.Control className='inputProduct' name='title' type="text" onChange={handleOnChange} placeholder="Name Product" />
                       </Form.Group>
                       <Form.Group className=" mt-4" >
                           <Form.Control className='inputProduct' name='price' onChange={handleOnChange} type="text" placeholder="Price" />

@@ -1,25 +1,28 @@
-import React, { useState } from 'react'
-import { Button,Form } from 'react-bootstrap';
-
+import { React, useState } from 'react'
+import { Button,Form,Alert } from 'react-bootstrap';
+import { useMutation } from 'react-query';
+import { API } from '../../config/api';
+import { useNavigate } from 'react-router';
 import NavbarAdmin from "./navbarAdmin";
-
 import '../../styles/addproduct.css'
-// import toping1 from '../../assets/img/toping/toping1.png'
 import ikonupload from '../../assets/img/ikon-upload.png'
 import Noimg from '../../assets/img/no-photo.jpg'
 
 export default function AddToping() {
 
+  const navigate = useNavigate();
+
   const [preview, setPreview] = useState(null)
-    const [addProduct, setAddProduct] = useState({
-        name : "",
-        price : "",
-        image : ""
-    })
+
+  const [form, setForm] = useState({
+        title : '',
+        price : '',
+        image : '',
+    });
 
     const handleOnChange = (e) => {
-        setAddProduct(({
-            ...addProduct,
+      setForm(({
+            ...form,
             [e.target.name]:e.target.type === 'file' ? e.target.files : e.target.value
           }))
 
@@ -29,13 +32,39 @@ export default function AddToping() {
           }
         };
 
-    const handleOnSubmit = (e) => {
-        e.preventDefault()
-        
-        alert('Data added sucesfully!')
-    }
-    console.log(addProduct);
-  return (
+    const handleOnSubmit = useMutation ( async (e) => {
+      try{
+        e.preventDefault();
+
+        const config = {
+          headers: {
+            'Content-type': 'multipart/form-data',
+          }
+        };
+
+        const formData = new FormData();
+        formData.set('title', form.title)
+        formData.set('price', form.price)
+        formData.set('image', form.image[0], form.image[0].name)
+
+        console.log(form);
+
+        const response = await API.post('/topping', formData, config)
+        console.log(response);
+
+        navigate('/add-toping')
+      } catch(error) {
+        const alert = (
+          <Alert variant="danger" className="py-1">
+            Failed
+          </Alert>
+        );
+        console.log(error);
+      } 
+    })
+    console.log(form);
+  
+    return (
     <>
     {/* <div className='navbar ms-5 me-5 mt-3 mb-3'>
         <div className='ms-5 mt-2'>
@@ -52,9 +81,9 @@ export default function AddToping() {
             <h2>Toping</h2>
           </div>
               <div className='form-addProduct ps-4 py-4 '>
-                  <Form onSubmit={handleOnSubmit}>
+                  <Form onSubmit={ (e) => handleOnSubmit.mutate(e)}>
                       <Form.Group className="mb-3" controlId="formBasicEmail">
-                          <Form.Control className='inputProduct' name='name' type="text" onChange={handleOnChange} placeholder="Name Toping" />
+                          <Form.Control className='inputProduct' name='title' type="text" onChange={handleOnChange} placeholder="Name Toping" />
                       </Form.Group>
                       <Form.Group className=" mt-4" controlId="formBasicEmail">
                           <Form.Control className='inputProduct' name='price' type="text" onChange={handleOnChange} placeholder="Price" />

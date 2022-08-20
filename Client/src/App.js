@@ -1,5 +1,5 @@
-import React, { useEffect, useState} from "react";
-import { BrowserRouter as Router, Route, Routes, Link  } from "react-router-dom";
+import React, { useEffect, useState, useContext} from "react";
+import { BrowserRouter as Router, Route, Routes, useNavigate  } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Main from "../src/pages/main";
 import Cart from "./customer/cart"
@@ -8,21 +8,58 @@ import AddToping from "./pages/admin/addToping";
 import IncomeTransaction from "./pages/admin/IncomeTransaction";
 import DetailProduct from './customer/detailProduct'
 import DataDrink from "./components/DataDummy/DataDrink";
-import Login from "./pages/login";
+import Login from "./pages/authModal";
 import Home from "./pages/landing";
 import Profile from './customer/profile'
-import { useContext } from "react";
 import { Usercontext } from "./context/user-context";
+import { API, setAuthToken } from './config/api'
 
 
-
+if (localStorage.token) {
+  setAuthToken(localStorage.token)
+}
 
 function App() {
-  const [user] = useContext(Usercontext)
+  let navigate = useNavigate();
+  const [state, dispatch] = useContext(Usercontext)
 
-  useEffect(() => {
-    console.log(user);
-  },[user])
+ useEffect(() => {
+   if (state.isLogin === false) {
+     navigate('/');
+   } else {
+     if (state.user.status === 'admin') {
+      navigate('admin');
+     } else if (state.user.status === 'customer') {
+       navigate('/main');
+     }
+   }
+ }, [state]);
+
+ const checkUser = async () => {
+   try {
+     const response = await API.get('/check-auth')
+
+     if (response.status === 404) {
+       return dispatch({
+         type: 'AUTH_ERROR',
+       });
+     }
+
+     let payload = response.data.data;
+     payload.token = localStorage.token;
+
+     dispatch({
+       type: 'USER_SUCCESS',
+       payload,
+     });
+   } catch (error) {
+     console.log(error);
+   }
+ };
+
+ useEffect(() => {
+   checkUser();
+ }, []);
   return (
     <>
       <Routes>
