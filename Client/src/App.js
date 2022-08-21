@@ -11,6 +11,8 @@ import DataDrink from "./components/DataDummy/DataDrink";
 import Login from "./pages/authModal";
 import Home from "./pages/landing";
 import Profile from './customer/profile'
+import Addprofile from './customer/addprofile'
+import Editprofile from './customer/editprofile'
 import { Usercontext } from "./context/user-context";
 import { API, setAuthToken } from './config/api'
 
@@ -67,6 +69,9 @@ function App() {
         <Route exact path='/main' element={<Main/>}/>
         <Route exact path='/cart' element={<Cart/>}/>
         <Route exact path='/profile' element={<Profile/>}/>
+        <Route exact path='/addprofile' element={<Addprofile/>}/>
+        <Route exact path='/editprofile' element={<Editprofile/>}/>
+        {/* <Route exact path='/listproduct' element={<ListProduct/>}/> */}
         <Route exact path='/add-drink' element={<AddProduct/>}/>
         <Route exact path='/add-toping' element={<AddToping/>}/>
         <Route exact path='/add-toping' element={<AddToping/>}/>

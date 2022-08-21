@@ -15,9 +15,11 @@ import '../styles/style.css'
 export default function Main() {
 
   const moving = useNavigate()
-  const moveTodetailDrink = (id) => {
-    moving(`/detail-drink/` + id)
+  const moveTodetailDrink = (index) => {
+    moving(`/detail-drink/` + index)
+    console.log(index);
   }
+
   
   const [dataproduct, setDataproduct] = useState([]);
 
@@ -62,7 +64,7 @@ export default function Main() {
               <div className='f2 me-5 mb-5'>
                 {dataproduct.map((item, index) => (
                   <Card className="DrinkList me-5 mb-3" style={{ width: '18rem' }} key={index}>
-                    <Card.Img variant="top" src={item?.image} onClick={() => moveTodetailDrink(item.id)}/>
+                    <Card.Img variant="top" src={item?.image} onClick={() => moving(`/detail-drink/` + item?.id) }/>
                     <Card.Body>
                       <Card.Title className='cardTitle mb-3'>{item?.title}</Card.Title>
                       <Card.Text className='cardPrice mb-2'>Rp.{item?.price}</Card.Text>

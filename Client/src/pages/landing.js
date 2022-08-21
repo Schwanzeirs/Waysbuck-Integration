@@ -1,4 +1,4 @@
-import React, { useState, useContext, Component } from 'react'
+import React, { useState, useContext, useEffect ,Component } from 'react'
 import NavbarUser from '../customer/navbarUser'
 import Landing from '../components/background'
 import "../styles/style.css"
@@ -15,17 +15,21 @@ import { useQuery } from 'react-query';
 
 export default function Home() {
 
-  // let { data: products } = useQuery('productsCache', async () => {
-  //   const response = await API.get('/products');
-  //   return response.data.data;
-  // });
-  // console.log(products);
+  const [dataproduct, setDataproduct] = useState([]);
 
-  const [drinks] =useState(DummyDataDrink)
-  // const moving = useNavigate()
-  // const handleTitle = (id) => {
-  //   moving('/detail-drink/' + id)
-  // }
+  useEffect(() => {
+    const dataproduct = async () => {
+      try {
+        const response = await API.get("/products");
+        setDataproduct(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    dataproduct();
+  }, [setDataproduct]);
+  
+  console.log(dataproduct);
 
     const [state, dispatch] = useContext(Usercontext)
     console.log(state.isLogin);
@@ -33,13 +37,8 @@ export default function Home() {
   return (
     <>
       <div className='navbar ms-5 me-5 '>
-        {/* <div className='ms-5 mt-2'>
-          <img src={logowaysbuck} />
-        </div> */}
         <div className='auth'>
-          {/* <NavbarUser/> */}
           {state.isLogin === false?<AuthModal/>:<NavbarUser/>}
-        {/* <AuthModal /> */}
         </div>
     <div className=''>
             <Card id='card-main'>
@@ -59,9 +58,9 @@ export default function Home() {
                   <p>Let's order</p>
             </div>
             <div className='f2 me-5 mb-5'>
-              {drinks.map((item, index) => (
+              {dataproduct.map((item, index) => (
                 <Card className="DrinkList me-5 mb-3" style={{ width: '18rem' }} item={item} key={index}>
-                <Card.Img variant="top" src={item?.img} />
+                <Card.Img variant="top" src={item?.image} />
                 <Card.Body>
                   <Card.Title className='cardTitle mb-3'>{item?.name}</Card.Title>
                   <Card.Text className='cardPrice mb-2'>Rp.{item?.price}</Card.Text>
