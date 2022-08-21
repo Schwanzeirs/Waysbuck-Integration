@@ -4,8 +4,9 @@ import NavbarUser from './navbarUser'
 import '../styles/detailProduct.css'
 import { API } from '../config/api'
 import Rp from "rupiah-format"
-import { useParams } from 'react-router'
+import { Navigate, useParams } from 'react-router'
 import DummyDataToping from "../components/DataDummy/DataToping"
+import { useMutation } from 'react-query';
 // import DummyDataDrink from "../components/DataDummy/DataDrink"
 // import Toping from "../assets/img/toping/toping2.png"
 // import DataDrink from '../components/DataDummy/DataDrink'
@@ -13,9 +14,7 @@ import DummyDataToping from "../components/DataDummy/DataToping"
 export default function DetailProduct() {
 
   const [dataDetail, setDataDetail] = useState([]);
-  console.log(dataDetail);
   const params = useParams();
-  console.log(params.id);
 
   const dataProduct = async () => {
     try {
@@ -28,7 +27,6 @@ export default function DetailProduct() {
   useEffect(() => {
     dataProduct();
   }, []);
-  // console.log(response);
 
 
   const [checkedState, setCheckedState] = useState(
@@ -37,9 +35,9 @@ export default function DetailProduct() {
 
   const [total, setTotal] = useState(0);
  
-    const handleOnChange = (position) => {
+    const handleOnChange = (id) => {
         const updateCheckedState = checkedState.map((item, index) =>
-        index === position? !item: item)
+        index === id? !item: item)
 
         setCheckedState(updateCheckedState)
 
@@ -52,12 +50,12 @@ export default function DetailProduct() {
             },
             0
         )
+        const toppingId = id + 1
+        console.log(toppingId);
         console.log(totalPrice);
         setTotal(totalPrice)
           }
-    
   const [dataproduct, setDataproduct] = useState([]);
-  console.log(dataproduct);
 
   useEffect(() => {
     const dataproduct = async () => {
@@ -72,11 +70,36 @@ export default function DetailProduct() {
   }, [setDataproduct]);
           
 const [cartCounter, setCartCounter] = useState(0)
-console.log(cartCounter);
 const handleOnIncrease = () => {
   return setCartCounter(cartCounter + 1)
 }  
 
+let qty = 1;
+let amount = dataDetail?.price + total
+
+const handleSubmit = useMutation(async (e) => {
+  try{
+    e.preventDefault();
+
+    const config = {
+      headers: {
+        "Content-type": "application/json",
+      },
+    };
+    const body = JSON.stringify({
+      sub_amount: amount,
+      qty: qty,
+      transaction_id: qty,
+      product_id: parseInt(params.id),
+    });
+
+    await API.post("/cart", body, config)
+
+    Navigate("/");
+  } catch(error) {
+    console.log(error);
+  }
+})
 
 return (
     <>
@@ -116,10 +139,10 @@ return (
                       <Row className='justify-content-between mb-3 mt-5'>
                         <Col className='col-8 ms-4' style={{color: '#974A4A'}}><p>Total</p></Col>
                         <Col  className='col-2 me-3'>
-                          <p className='font-weight-bold fs-6'>{Rp.convert(dataDetail?.price)}</p> 
+                          <p className='font-weight-bold fs-6'>{Rp.convert(dataDetail?.price+total)}</p> 
                         </Col>
                       </Row>
-                      <Button variant="danger" className='ms-4 mb-5' style={{width: '92%'}} onClick={handleOnIncrease}>Add Cart</Button>
+                      <Button variant="danger" className='ms-4 mb-5' style={{width: '92%'}} onClick={(e) => handleSubmit.mutate(e)}>Add Cart</Button>
                     </Row>
                 </div>
           </div>

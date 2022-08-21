@@ -71,36 +71,60 @@ func (h *handlerCart) GetCart(w http.ResponseWriter, r *http.Request) {
 func (h *handlerCart) CreateCart(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "aplication/json")
 
-	var toppingsId []int
-	for _, r := range r.FormValue("toppingId") {
-		if int(r-'0') >= 0 {
-			toppingsId = append(toppingsId, int(r-'0'))
-		}
-	}
+	// var toppingsId []int
+	// for _, r := range r.FormValue("toppingId") {
+	// 	if int(r-'0') >= 0 {
+	// 		toppingsId = append(toppingsId, int(r-'0'))
+	// 	}
+	// }
 
-	productId, _ := strconv.Atoi(r.FormValue("product_id"))
-	transactionId, _ := strconv.Atoi(r.FormValue("transaction_id"))
-	qty, _ := strconv.Atoi(r.FormValue("qty"))
-	subAmount, _ := strconv.Atoi(r.FormValue("sub_amount"))
+	// productId, _ := strconv.Atoi(r.FormValue("product_id"))
+	// transactionId, _ := strconv.Atoi(r.FormValue("transaction_id"))
+	// qty, _ := strconv.Atoi(r.FormValue("qty"))
+	// subAmount, _ := strconv.Atoi(r.FormValue("sub_amount"))
 
-	request := cartdto.CartRequest{
-		ProductId:     productId,
-		ToppingID:     toppingsId,
-		TransactionId: transactionId,
-		Qty:           qty,
-		SubAmount:     subAmount,
+	// request := cartdto.CartRequest{
+	// 	ProductId:     productId,
+	// 	ToppingID:     toppingsId,
+	// 	TransactionId: transactionId,
+	// 	Qty:           qty,
+	// 	SubAmount:     subAmount,
+	// }
+
+	request := new(cartdto.CartRequest)
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
 	}
 
 	validation := validator.New()
 	err := validation.Struct(request)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		response := dto.ErrorResult{Code: http.StatusInternalServerError, Message: err.Error()}
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
 		json.NewEncoder(w).Encode(response)
 		return
 	}
 
-	topping, _ := h.CartRepository.FindToppingsById(toppingsId)
+	requestForm := models.Cart{
+		ProductId:     request.ProductId,
+		ToppingID:     request.ToppingID,
+		TransactionId: request.TransactionId,
+		Qty:           request.Qty,
+		SubAmount:     request.SubAmount,
+	}
+
+	validate := validator.New()
+	errs := validate.Struct(requestForm)
+	if errs != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	topping, _ := h.CartRepository.FindToppingsById(request.ToppingID)
 
 	cart := models.Cart{
 		ProductId:     request.ProductId,

@@ -10,41 +10,49 @@ import topping8 from "../../assets/img/toping/toping8.png"
 
 const DummyDataToping = [
     {
+        id : 1,
         name : 'Bubble Tea Gelatin',
         img : topping1,
         price : 6000
     },
     {
+        id : 2,
         name : 'Mango',
         img : topping2,
         price : 9000
     },
     {
+        id : 3,
         name : 'Green Coconut',
         img : topping3,
         price : 5000
     },
     {
+        id : 4,
         name : 'Boba Manggo',
         img : topping4,
         price : 8000
     },
     {
+        id : 5,
         name : 'Bill Berry Boba',
         img : topping8,
         price : 4000
     },
     {
+        id : 6,
         name : 'Kiwi Popping Pearl',
         img : topping5,
         price : 6000
     },
     {
+        id : 7,
         name : 'Matcha Cantaloupe',
         img : topping6,
         price : 9000
     },
     {
+        id : 8,
         name : 'Strawberry Popping',
         img : topping7,
         price : 4000

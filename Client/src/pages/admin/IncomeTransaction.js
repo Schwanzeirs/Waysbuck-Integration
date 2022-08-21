@@ -21,10 +21,8 @@ export default function IncomeTransaction() {
   const handleShow = () => setShow(true);
 
   const[datas] = useState(DataTransaction)
-  console.log(datas);
 
   const [ DummyProduct ] = useState(Dummytransactions)
-  console.log(DummyProduct)
 
 //   DummyProduct.forEach((item) => {
 //     total += item?.price
