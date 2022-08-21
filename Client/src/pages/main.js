@@ -1,4 +1,4 @@
-import React, { useState, useContext, Component } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import Landing from '../components/background'
 import "../styles/style.css"
 import { Card } from 'react-bootstrap'
@@ -14,17 +14,27 @@ import '../styles/style.css'
 
 export default function Main() {
 
-  let { data: products } = useQuery('productsCache', async () => {
-    const response = await API.get('/products');
-    return response.data.data;
-  });
-
-  const [drinks] =useState(DummyDataDrink)
   const moving = useNavigate()
-  const handleTitle = (id) => {
-    moving('/detail-drink/' + id)
+  const moveTodetailDrink = (id) => {
+    moving(`/detail-drink/` + id)
   }
   
+  const [dataproduct, setDataproduct] = useState([]);
+
+  useEffect(() => {
+    const dataproduct = async () => {
+      try {
+        const response = await API.get("/products");
+        setDataproduct(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    dataproduct();
+  }, [setDataproduct]);
+  
+  console.log(dataproduct);
+
   return (
     <>
       <div className='navbar ms-5 me-5 '>
@@ -50,13 +60,13 @@ export default function Main() {
                     <p>Let's order</p>
               </div>
               <div className='f2 me-5 mb-5'>
-                {products?.map((item, index) => (
-                  <Card className="DrinkList me-5 mb-3" style={{ width: '18rem' }} item={item} key={index}>
-                  <Card.Img variant="top" src={item?.img} onClick={() => handleTitle(item?.id)}/>
-                  <Card.Body>
-                    <Card.Title className='cardTitle mb-3'>{item?.title}</Card.Title>
-                    <Card.Text className='cardPrice mb-2'>Rp.{item?.price}</Card.Text>
-                  </Card.Body>
+                {dataproduct.map((item, index) => (
+                  <Card className="DrinkList me-5 mb-3" style={{ width: '18rem' }} key={index}>
+                    <Card.Img variant="top" src={item?.image} onClick={() => moveTodetailDrink(item.id)}/>
+                    <Card.Body>
+                      <Card.Title className='cardTitle mb-3'>{item?.title}</Card.Title>
+                      <Card.Text className='cardPrice mb-2'>Rp.{item?.price}</Card.Text>
+                    </Card.Body>
                 </Card>
                 ))}
               </div>

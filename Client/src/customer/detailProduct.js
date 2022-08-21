@@ -1,7 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Row,Col,Button } from 'react-bootstrap'
 import NavbarUser from './navbarUser'
 import '../styles/detailProduct.css'
+import { API } from '../config/api'
 import Rp from "rupiah-format"
 import { useParams } from 'react-router'
 import DummyDataToping from "../components/DataDummy/DataToping"
@@ -34,7 +35,7 @@ export default function DetailProduct() {
         const totalPrice = updateCheckedState.reduce(
             (sum, currenstState, index) => {
                 if (currenstState === true) {
-                    return sum + DummyDataToping[index].price
+                    return sum + dataproduct[index].price
                 }
                 return sum
             },
@@ -43,7 +44,20 @@ export default function DetailProduct() {
         console.log(totalPrice);
         setTotal(totalPrice)
           }
+    
+  const [dataproduct, setDataproduct] = useState([]);
 
+  useEffect(() => {
+    const dataproduct = async () => {
+      try {
+        const response = await API.get("/toppings");
+        setDataproduct(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    dataproduct();
+  }, [setDataproduct]);
           
           //   const handleOnchage = (id) => {
 //     const updateCheckedState = checkedState.map((item, index) =>
@@ -95,7 +109,7 @@ return (
             <h5>Toping</h5>
                 <div className='toping'>
                     <Row className='list-toping1'>
-                      {DummyDataToping.map((item, index) =>(
+                      {dataproduct.map((item, index) =>(
                         <Col key={index} className='col-toping'>
                           <div className='d-flex justify-content-center'>
                             <input 
@@ -107,13 +121,13 @@ return (
                               onChange={() => handleOnChange(index)}
                               hidden/>
                           <label htmlFor={`custom-checkbox-${index}`}>
-                            <img src={item?.img} style={{cursor : 'pointer'}}/>
+                            <img src={item?.image} style={{cursor : 'pointer'}}/>
                           </label>
                           </div>
-                              <p className='mt-1 ms-4  text-center fw-bolder fs-6'>{item?.name}</p>
-                              {/* <div>
+                              <p className='mt-1 ms-4  text-center fw-bolder fs-6'>{item?.title}</p>
+                              <div hidden>
                                 <p>{item?.price}</p>
-                              </div> */}
+                              </div>
                         </Col>
                       ))}
                       <Row className='justify-content-between mb-3 mt-5'>

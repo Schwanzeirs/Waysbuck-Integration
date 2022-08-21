@@ -8,14 +8,24 @@ import Rectangle from '../assets/img/Rectangle.png'
 import DummyDataDrink from "../components/DataDummy/DataDrink"
 import { Usercontext } from '../context/user-context'
 import AuthModal from './authModal'
+import { API } from '../config/api'
+import { useQuery } from 'react-query';
+
+
 
 export default function Home() {
 
+  // let { data: products } = useQuery('productsCache', async () => {
+  //   const response = await API.get('/products');
+  //   return response.data.data;
+  // });
+  // console.log(products);
+
   const [drinks] =useState(DummyDataDrink)
-  const moving = useNavigate()
-  const handleTitle = (id) => {
-    moving('/detail-drink/' + id)
-  }
+  // const moving = useNavigate()
+  // const handleTitle = (id) => {
+  //   moving('/detail-drink/' + id)
+  // }
 
     const [state, dispatch] = useContext(Usercontext)
     console.log(state.isLogin);
@@ -50,7 +60,7 @@ export default function Home() {
             </div>
             <div className='f2 me-5 mb-5'>
               {drinks.map((item, index) => (
-                <Card className="DrinkList me-5 mb-3" style={{ width: '18rem' }} key={index}>
+                <Card className="DrinkList me-5 mb-3" style={{ width: '18rem' }} item={item} key={index}>
                 <Card.Img variant="top" src={item?.img} />
                 <Card.Body>
                   <Card.Title className='cardTitle mb-3'>{item?.name}</Card.Title>
