@@ -95,7 +95,7 @@ const handleSubmit = useMutation(async (e) => {
 
     await API.post("/cart", body, config)
 
-    Navigate("/cart");
+    Navigate("/");
   } catch(error) {
     console.log(error);
   }
