@@ -84,7 +84,7 @@ export default function Profile() {
                 </div>
                 ))}
             </div>
-            <Button variant="danger" onClick={() => moveTodAddprofile()}>Add Profile</Button>
+            <Button className='me-1' variant="danger" onClick={() => moveTodAddprofile()}>Add Profile</Button>
             <Button variant="danger" onClick={() => moveTodEditprofile()}>Edit Profile</Button>
         </div>
         <div className='myTransaction'>
