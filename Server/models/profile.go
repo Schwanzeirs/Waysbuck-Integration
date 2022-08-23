@@ -8,6 +8,7 @@ type Profile struct {
 	Phone     string               `json:"phone" gorm:"type: varchar(255)"`
 	Gender    string               `json:"gender" gorm:"type: varchar(255)"`
 	Address   string               `json:"address" gorm:"type: text"`
+	Postcode  int                  `json:"postcode" gorm:"type: int"`
 	UserID    int                  `json:"user_id"`
 	User      UsersProfileResponse `json:"user"`
 	CreatedAt time.Time            `json:"-"`
@@ -15,11 +16,12 @@ type Profile struct {
 }
 
 type ProfileResponse struct {
-	Image   string `json:"image"`
-	Phone   string `json:"phone"`
-	Gender  string `json:"gender"`
-	Address string `json:"address"`
-	UserId  string `json:"-"`
+	Image    string `json:"image"`
+	Phone    string `json:"phone"`
+	Gender   string `json:"gender"`
+	Address  string `json:"address"`
+	Postcode int    `json:"postcode"`
+	UserId   string `json:"-"`
 }
 
 func (ProfileResponse) TableName() string {

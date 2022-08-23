@@ -3,13 +3,9 @@ import Landing from '../components/background'
 import "../styles/style.css"
 import { Card } from 'react-bootstrap'
 import { useNavigate } from "react-router-dom"
-import { useQuery } from 'react-query';
 import { API } from '../config/api'
 import Rectangle from '../assets/img/Rectangle.png'
-import NavbarAdmin from './admin/navbarAdmin'
 import NavbarUser from '../customer/navbarUser'
-import DummyDataDrink from "../components/DataDummy/DataDrink"
-import { Usercontext } from '../context/user-context'
 import '../styles/style.css'
 
 export default function Main() {
@@ -17,7 +13,6 @@ export default function Main() {
   const moving = useNavigate()
   const moveTodetailDrink = (index) => {
     moving(`/detail-drink/` + index)
-    console.log(index);
   }
 
   
@@ -34,8 +29,6 @@ export default function Main() {
     };
     dataproduct();
   }, [setDataproduct]);
-  
-  console.log(dataproduct);
 
   return (
     <>

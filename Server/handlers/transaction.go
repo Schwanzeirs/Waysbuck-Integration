@@ -25,7 +25,10 @@ func HandlerTransaction(TransactionRepository repositories.TransactionRepository
 func (h *handlerTransaction) FindTransactions(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	transactions, err := h.TransactionRepository.FindTransactions()
+	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	userId := int(userInfo["id"].(float64))
+
+	transactions, err := h.TransactionRepository.FindTransactions(userId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(err.Error())
@@ -61,12 +64,19 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
 	userId := int(userInfo["id"].(float64))
 
-	amount, _ := strconv.Atoi(r.FormValue("amount"))
+	// amount, _ := strconv.Atoi(r.FormValue("amount"))
 
-	request := transactiondto.TransactionRequest{
-		Status: r.FormValue("status"),
-		UserID: userId,
-		Amount: amount,
+	// request := transactiondto.TransactionRequest{
+	// 	Status: r.FormValue("status"),
+	// 	UserID: userId,
+	// 	Amount: amount,
+	// }
+
+	request := new(transactiondto.TransactionRequest)
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
 	}
 
 	validation := validator.New()
@@ -79,7 +89,7 @@ func (h *handlerTransaction) CreateTransaction(w http.ResponseWriter, r *http.Re
 	}
 
 	transaction := models.Transaction{
-		Status: request.Status,
+		Status: "Active",
 		UserId: userId,
 		Amount: request.Amount,
 	}

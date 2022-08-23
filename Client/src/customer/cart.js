@@ -20,11 +20,11 @@ export default function Cart() {
         };
         dataCart();
     }, [setDataCart]);
+
     console.log(dataCart);
 
     let priceProduct = (dataCart.price)
     let total = 0
-    console.log(priceProduct);
 
     let handleOnDelete = (id) => {}
 
@@ -49,9 +49,7 @@ export default function Cart() {
                                     <div className='d-flex' style={{width : '550px'}}>
                                         <p className='toping me-1'>Toping : </p>
                                           {item.topping.map((topping, idx) => (  
-                                        // <div >
                                         <p key={idx} className='text-danger'>{topping?.title}, </p> 
-                                        // </div>
                                            ))}  
                                     </div>
                                 </div>
@@ -59,7 +57,7 @@ export default function Cart() {
                         </div>
                         <div className='price me-3'>
                             <div className='d-flex ms-4'>
-                                <p>Price : {item.product?.price} </p>
+                                <p>Price : {item.sub_amount} </p>
                                 <p className='ms-2'>{}</p>
                             </div>
                             <img className='ms-5' src={Basket} onClick={handleOnDelete} />

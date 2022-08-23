@@ -47,10 +47,8 @@ export default function AddToping() {
         formData.set('price', form.price)
         formData.set('image', form.image[0], form.image[0].name)
 
-        console.log(form);
 
         const response = await API.post('/topping', formData, config)
-        console.log(response);
 
         navigate('/add-toping')
       } catch(error) {
@@ -62,7 +60,6 @@ export default function AddToping() {
         console.log(error);
       } 
     })
-    console.log(form);
   
     return (
     <>

@@ -4,7 +4,7 @@ import NavbarUser from './navbarUser'
 import '../styles/detailProduct.css'
 import { API } from '../config/api'
 import Rp from "rupiah-format"
-import { Navigate, useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
 import DummyDataToping from "../components/DataDummy/DataToping"
 import { useMutation } from 'react-query';
 // import DummyDataDrink from "../components/DataDummy/DataDrink"
@@ -12,6 +12,8 @@ import { useMutation } from 'react-query';
 // import DataDrink from '../components/DataDummy/DataDrink'
 
 export default function DetailProduct() {
+
+  const Navigate = useNavigate();
 
   const [dataDetail, setDataDetail] = useState([]);
   const params = useParams();
@@ -27,6 +29,36 @@ export default function DetailProduct() {
   useEffect(() => {
     dataProduct();
   }, []);
+
+  const [ dataTrans, setDataTrans ] = useState([])
+
+  const dataCrans = async () => {
+    try {
+      const response = await API.get("/transactions")
+      setDataTrans(response.data.data)
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    dataCrans();
+  }, []);
+
+  let trans = dataTrans
+
+
+  const [ topping_id, setToppingId ] = useState([]);
+
+  const handleTopping = (e) => {
+    let ToppingId = [...topping_id,];
+    if (e.target.checked) {
+      ToppingId = [...topping_id, parseInt(e.target.id)];
+    } else {
+      ToppingId.splice(topping_id.indexOf(e.target.value));
+    }
+    setToppingId(topping_id)
+  };
+
 
 
   const [checkedState, setCheckedState] = useState(
@@ -50,9 +82,7 @@ export default function DetailProduct() {
             },
             0
         )
-        const toppingId = id + 1
-        console.log(toppingId);
-        console.log(totalPrice);
+        const toppingId = id
         setTotal(totalPrice)
           }
   const [dataproduct, setDataproduct] = useState([]);
@@ -72,7 +102,9 @@ export default function DetailProduct() {
 const [cartCounter, setCartCounter] = useState(0)
 const handleOnIncrease = () => {
   return setCartCounter(cartCounter + 1)
-}  
+}
+
+
 
 let qty = 1;
 let amount = dataDetail?.price + total
@@ -118,7 +150,7 @@ return (
                       {dataproduct?.map((item, index) =>(
                         <Col key={index} className='col-toping'>
                           <div className='d-flex justify-content-center'>
-                            <input 
+                            <input
                               type="checkbox" 
                               className="poppingCheck" 
                               style={{display:"none"}}

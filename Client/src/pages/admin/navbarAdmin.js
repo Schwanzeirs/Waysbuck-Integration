@@ -18,7 +18,6 @@ export default function NavbarAdmin() {
   const [state, dispatch] = useContext(Usercontext)
 
   const logout = () => {
-    console.log(state);
     dispatch({
       type: 'LOGOUT'
     })

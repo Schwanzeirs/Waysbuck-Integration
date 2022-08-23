@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, { useEffect, useState } from 'react'
 import { Table, Button, Modal } from 'react-bootstrap';
 import '../../styles/tableIncomeTransaction.css'
 import Icecoffegreentea from '../../assets/img/icecoffegreentea.png'
@@ -12,56 +12,79 @@ import Rp from "rupiah-format"
 
 
 import "../../styles/style.css"
+import { API } from '../../config/api';
 
 export default function IncomeTransaction() {
+
+  const [dataTrans, setDataTrans] = useState([])
+
+  useEffect(() => {
+    const dataTrans = async () => {
+      try {
+        const response = await API.get("/carts")
+        setDataTrans(response.data.data)
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    dataTrans();
+  }, [setDataTrans]);
+
+  let total = 0
+
+  dataTrans.forEach((item) => {
+    total += item?.sub_amount
+  })
 
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  const[datas] = useState(DataTransaction)
+  const [datas] = useState(DataTransaction)
 
-  const [ DummyProduct ] = useState(Dummytransactions)
+  const [DummyProduct] = useState(Dummytransactions)
 
-//   DummyProduct.forEach((item) => {
-//     total += item?.price
-// })
+  //   DummyProduct.forEach((item) => {
+  //     total += item?.price
+  // })
 
   return (
     <>
-        {/* <NavbarAdmin/> */}
-        <Modal show={show} onHide={handleClose}>
-        <div className='d-flex rounded' style={{background: '#F7DADA'}}>
-                <div className='detailTransaction py-2 px-2'>
-                    {DummyProduct.map((item,index) => (
-                            <div className='d-flex'>
-                                <div>
-                                    <img className='img-drink' src={item?.image} />
-                                </div>
-                                <div className='ms-3'>
-                                    <h4 style={{color :"#BD0707"}}>{item?.name}</h4>
-                                    <p className='text-danger'> <strong>{item?.day}</strong>, {item?.date}</p>
-                                    <p className='text-danger'> Toping &nbsp; : {item?.toping}</p>
-                                    <p className='text-danger'>Price : {Rp.convert(item?.price)}</p>
-                                </div>
-                            </div>
-                     ))} 
+      {/* <NavbarAdmin/> */}
+      <Modal show={show} onHide={handleClose}>
+        <div className='d-flex rounded' style={{ background: '#F7DADA' }}>
+          <div className='detailTransaction py-2 px-2'>
+            {dataTrans.map((item, index) => (
+              <div className='d-flex' key={index}>
+                <div>
+                  <img className='img-drink' src={item.product?.image} />
                 </div>
-                    <div className='ms-4 py-2 px-2'>
-                        <div className='mb-2'>
-                            <img src={Logowaysbuck} />
-                        </div>
-                            <img src={Qrcode} />
-                        <div className='mt-2 ms-2'>
-                            <span>on the wayt</span>
-                        </div>
-                        <div className='mt-2 ms-2'>
-                            <span>12333</span>
-                        </div>
-                    </div>
+                <div className='ms-3'>
+                  <h4 style={{ color: "#BD0707" }}>{item.product?.title}</h4>
+                  {/* <p className='text-danger'> <strong>{item?.day}</strong>, {item?.date}</p> */}
+                  {item.topping.map((topping, idx) => (
+                    <p key={idx} className='text-danger'> Toping &nbsp; : {topping?.title}</p>
+                  ))}
+                  <p className='text-danger'>Price : {Rp.convert(item?.sub_amount)}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className='ms-4 py-2 px-2'>
+            <div className='mb-2'>
+              <img src={Logowaysbuck} />
             </div>
-          {/* <div className=''>
+            <img src={Qrcode} />
+            <div className='mt-2 ms-2'>
+              <span>on the way</span>
+            </div>
+            <div className='mt-2 ms-2'>
+              <span>{Rp.convert(total)}</span>
+            </div>
+          </div>
+        </div>
+        {/* <div className=''>
                 <div className='detailTransaction py-2 px-2 d-flex'>
                     <div className=''>
                         <div className='d-flex justify-content-center'>
@@ -95,37 +118,37 @@ export default function IncomeTransaction() {
                     </div>
                 </div>
             </div> */}
-        </Modal>
-    <NavbarAdmin/>
-    <div className='title-product mb-5 mt-5'>
+      </Modal>
+      <NavbarAdmin />
+      <div className='title-product mb-5 mt-5'>
         <h2>Income Transaction</h2>
-    </div>
-    <div className='table-incomeTransaction '>
-      <Table  bordered >
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>Name</th>
-            <th>Address</th>
-            <th>Post Code</th>
-            <th>Income</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {datas.map(data => (
-          <tr>
-            <td>{data.no}</td>
-            <td>{data.name}</td>
-            <td>{data.address}</td>
-            <td>{data.postcode}</td>
-            <td className='income'><p onClick={handleShow} style={{cursor:'pointer'}}>{data.income}</p></td>
-            <td className={`status-transaction-${data.status}`}>{data.status}</td>
-          </tr>
-          ))}
-        </tbody>
-      </Table>
-    </div>
+      </div>
+      <div className='table-incomeTransaction '>
+        <Table bordered >
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Name</th>
+              <th>Address</th>
+              <th>Post Code</th>
+              <th>Income</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {datas.map(data => (
+              <tr>
+                <td>{data.no}</td>
+                <td>{data.name}</td>
+                <td>{data.address}</td>
+                <td>{data.postcode}</td>
+                <td className='income'><p onClick={handleShow} style={{ cursor: 'pointer' }}>{data.income}</p></td>
+                <td className={`status-transaction-${data.status}`}>{data.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
     </>
   )
 }

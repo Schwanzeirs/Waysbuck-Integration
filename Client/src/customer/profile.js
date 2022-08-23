@@ -6,17 +6,27 @@ import { Button } from 'react-bootstrap';
 import NavbarUser from "./navbarUser";
 import DummyProfile from "../components/DataDummy/dataprofile"
 import Dummytransactions from "../components/DataDummy/transactiocard"
-// import ModalEditProfile from "./ModalEditProfile"
-
 import "../styles/profile.css";
-
 import Rp from "rupiah-format"
 import Profilephoto from '../assets/img/profilephoto.png'
-import Icecoffegreentea from '../assets/img/icecoffegreentea.png'
 import Logowaysbuck from '../assets/img/logowaysbuck.png'
 import Qrcode from '../assets/img/qrcode.png'
 
 export default function Profile() {
+
+  const [ dataTrans, setDataTrans ] = useState([]);
+
+  useEffect(() => {
+    const dataTrans = async () => {
+      try {
+        const response = await API.get("/carts");
+        setDataTrans(response.data.data)
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    dataTrans();
+  }, [setDataTrans]);
 
   const moving = useNavigate()
   const moveTodAddprofile = () => {
@@ -32,12 +42,11 @@ export default function Profile() {
     const dataCustomer = profileDummy[0]
     
     const [ DummyProduct ] = useState(Dummytransactions)
-    console.log(DummyProduct)
 
     let total = 0
 
-    DummyProduct.forEach((item) => {
-        total += item?.price
+    dataTrans.forEach((item) => {
+        total += item?.sub_amount
     })
 
   const [dataprofile, setDataprofile] = useState([]);
@@ -54,7 +63,6 @@ export default function Profile() {
     dataprofile();
   }, [setDataprofile]);
   
-  console.log(dataprofile);
 
     const [cartCounter, setCartCounter] = useState(0)
   return (
@@ -91,16 +99,18 @@ export default function Profile() {
          <h2 className=''>My Transaction</h2>
             <div className='d-flex rounded'>
                 <div className='detailTransaction py-2 px-2'>
-                    {DummyProduct.map((item,index) => (
+                    {dataTrans.map((item,index) => (
                             <div className='d-flex' key={index}>
                                 <div>
-                                    <img className='img-drink' src={item?.image} />
+                                    <img className='img-drink' src={item.product?.image} />
                                 </div>
                                 <div className='ms-3'>
-                                    <h4 style={{color :"#BD0707"}}>{item?.name}</h4>
-                                    <p className='text-danger'> <strong>{item?.day}</strong>, {item?.date}</p>
-                                    <p className='text-danger'> Toping &nbsp; : {item?.toping}</p>
-                                    <p className='text-danger'>Price : {Rp.convert(item?.price)}</p>
+                                    <h4 style={{color :"#BD0707"}}>{item.product?.title}</h4>
+                                    {/* <p className='text-danger'> <strong>{item?.day}</strong>, {item?.date}</p> */}
+                                    {item.topping.map((topping, idx) => (
+                                    <p key={idx} className='text-danger'> Toping &nbsp; : {topping?.title}</p>
+                                    ))}
+                                    <p className='text-danger'>Price : {Rp.convert(item?.sub_amount)}</p>
                                 </div>
                             </div>
                     ))}
@@ -111,7 +121,7 @@ export default function Profile() {
                         </div>
                             <img src={Qrcode} />
                         <div className='mt-2 ms-2'>
-                            <span>on the wayt</span>
+                            <span>on the way</span>
                         </div>
                         <div className='mt-2 ms-2'>
                             <span>{Rp.convert(total)}</span>

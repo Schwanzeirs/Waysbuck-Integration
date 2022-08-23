@@ -10,6 +10,7 @@ import (
 	"strconv"
 
 	"github.com/go-playground/validator/v10"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/mux"
 )
 
@@ -26,7 +27,10 @@ var transimg = "http://localhost:5000/uploads/"
 func (h *handlerCart) FindCarts(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	carts, err := h.CartRepository.FindCarts()
+	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	userId := int(userInfo["id"].(float64))
+
+	carts, err := h.CartRepository.FindCarts(userId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		response := dto.ErrorResult{Code: http.StatusInternalServerError, Message: err.Error()}
@@ -71,6 +75,9 @@ func (h *handlerCart) GetCart(w http.ResponseWriter, r *http.Request) {
 func (h *handlerCart) CreateCart(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "aplication/json")
 
+	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	userId := int(userInfo["id"].(float64))
+
 	// var toppingsId []int
 	// for _, r := range r.FormValue("toppingId") {
 	// 	if int(r-'0') >= 0 {
@@ -113,6 +120,7 @@ func (h *handlerCart) CreateCart(w http.ResponseWriter, r *http.Request) {
 		TransactionId: request.TransactionId,
 		Qty:           request.Qty,
 		SubAmount:     request.SubAmount,
+		UserID:        userId,
 	}
 
 	validate := validator.New()
@@ -132,6 +140,7 @@ func (h *handlerCart) CreateCart(w http.ResponseWriter, r *http.Request) {
 		TransactionId: request.TransactionId,
 		Qty:           request.Qty,
 		SubAmount:     request.SubAmount,
+		UserID:        userId,
 	}
 
 	cart, err = h.CartRepository.CreateCart(cart)

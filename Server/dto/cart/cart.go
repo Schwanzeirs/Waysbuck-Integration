@@ -15,6 +15,7 @@ type CartResponse struct {
 	Product       models.Product   `json:"product"`
 	Topping       []models.Topping `json:"topping"`
 	TransactionId int              `json:"transaction_id"`
+	Userid        int              `json:"user_id"`
 	Qty           int              `json:"qty"`
 	SubAmount     int              `json:"sub_amount"`
 }

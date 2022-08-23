@@ -7,7 +7,7 @@ import (
 )
 
 type CartRepository interface {
-	FindCarts() ([]models.Cart, error)
+	FindCarts(ID int) ([]models.Cart, error)
 	FindToppingsById(ToppingID []int) ([]models.Topping, error)
 	GetCart(ID int) (models.Cart, error)
 	CreateCart(cart models.Cart) (models.Cart, error)
@@ -19,9 +19,9 @@ func RepositoryCart(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
-func (r *repository) FindCarts() ([]models.Cart, error) {
+func (r *repository) FindCarts(ID int) ([]models.Cart, error) {
 	var carts []models.Cart
-	err := r.db.Preload("Product").Preload("Topping").Find(&carts).Error
+	err := r.db.Preload("Product").Preload("Topping").Preload("User").Find(&carts, "user_id = ?", ID).Error
 
 	return carts, err
 }

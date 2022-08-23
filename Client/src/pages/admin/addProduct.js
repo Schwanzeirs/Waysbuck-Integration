@@ -48,10 +48,8 @@ export default function AddProduct() {
       formData.set('price', form.price)
       formData.set('image', form.image[0], form.image[0].name)
 
-      console.log(form);
 
       const response = await API.post('/product', formData, config)
-      console.log(response);
 
       navigate('/add-drink');
     } catch (error) {

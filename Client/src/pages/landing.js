@@ -29,10 +29,8 @@ export default function Home() {
     dataproduct();
   }, [setDataproduct]);
   
-  console.log(dataproduct);
 
     const [state, dispatch] = useContext(Usercontext)
-    console.log(state.isLogin);
   
   return (
     <>
