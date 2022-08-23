@@ -4,6 +4,7 @@ import "../styles/cart.css"
 import { API } from '../config/api'
 import Icecoffepalmsugar from "../assets/img/icecoffepalmsugar.png"
 import Basket from "../assets/img/basket.svg"
+import Rp from "rupiah-format"
 
 export default function Cart() {
 
@@ -23,8 +24,11 @@ export default function Cart() {
 
     console.log(dataCart);
 
-    let priceProduct = (dataCart.price)
-    let total = 0
+    let total = 0 
+    dataCart.forEach((item) => { 
+        total += item?.sub_amount 
+    }) 
+    console.log(total);
 
     let handleOnDelete = (id) => {}
 
@@ -67,32 +71,32 @@ export default function Cart() {
                 ))} 
                 <hr/>
                 </div>
-            <div className='rigth-side col-4 .d-inline-flex'>
-                <hr/>
-                <div class="row mb-3">
-                    <div class="col">
-                        <span className='text-danger fs-6 fw-normal'>Sub Total</span>
-                    </div>
-                    <div class="col text-danger fw-normal">
-                        <p className='float-end'>69.000</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <span className='text-danger fs-6 fw-normal'>Qty</span>
-                    </div>
-                    <div class="col text-danger fw-normal">
-                    <p className='float-end'>{dataCart.length}</p>
-                    </div>
-                </div>
-                <hr/>
-                <div class="row">
-                    <div class="col">
-                        <span className='text-danger fs-6 fw-normal'>Total</span>
-                    </div>
-                    <div class="col text-danger fw-normal">
-                    <p className='float-end'>69.000</p>
-                    </div>
+                <div className='rigth-side col-4 .d-inline-flex'> 
+                <hr/> 
+                <div class="row mb-3"> 
+                    <div class="col"> 
+                        <span className='text-danger fs-6 fw-normal'>Sub Total</span> 
+                    </div> 
+                        <div class="col text-danger fw-normal"> 
+                            <p className='float-end'>{Rp.convert(total)}</p> 
+                        </div> 
+                </div> 
+                <div class="row"> 
+                    <div class="col"> 
+                        <span className='text-danger fs-6 fw-normal'>Qty</span> 
+                    </div> 
+                    <div class="col text-danger fw-normal"> 
+                    <p className='float-end'>{dataCart.length}</p> 
+                    </div> 
+                </div> 
+                <hr/> 
+                <div class="row"> 
+                    <div class="col"> 
+                        <span className='text-danger fs-6 fw-normal'>Total</span> 
+                    </div> 
+                    <div class="col text-danger fw-normal"> 
+                    <p className='float-end'>{Rp.convert(total)}</p> 
+                    </div> 
                 </div>
                 
                 <div className='col mt-5' >
