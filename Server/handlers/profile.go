@@ -27,7 +27,10 @@ func HandlerProfile(ProfileRepository repositories.ProfileRepository) *handlerPr
 func (h *handlerProfile) FindProfile(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
-	profiles, err := h.ProfileRepository.FindProfile()
+	userInfo := r.Context().Value("userInfo").(jwt.MapClaims)
+	userId := int(userInfo["id"].(float64))
+
+	profiles, err := h.ProfileRepository.FindProfile(userId)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(err.Error())

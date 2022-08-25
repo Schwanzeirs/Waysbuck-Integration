@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Button, Modal } from 'react-bootstrap';
 import '../../styles/tableIncomeTransaction.css'
-import Icecoffegreentea from '../../assets/img/icecoffegreentea.png'
 import Logowaysbuck from '../../assets/img/logowaysbuck.png'
 import Qrcode from '../../assets/img/qrcode.png'
 import NavbarAdmin from "../admin/navbarAdmin";
 import DataTransaction from "../../components/DataDummy/DataincomTransaction";
 import Dummytransactions from "../../components/DataDummy/transactiocard";
-
 import Rp from "rupiah-format"
-
-
 import "../../styles/style.css"
 import { API } from '../../config/api';
 
 export default function IncomeTransaction() {
 
   const [dataTrans, setDataTrans] = useState([])
+  const [dataUsers, setDataUsers] = useState([])
 
   useEffect(() => {
     const dataTrans = async () => {
@@ -30,6 +27,18 @@ export default function IncomeTransaction() {
     dataTrans();
   }, [setDataTrans]);
 
+  useEffect(() => {
+    const dataUsers = async () => {
+      try {
+        const response = await API.get("/users")
+        setDataUsers(response.data.data)
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    dataUsers();
+  }, [setDataUsers]);
+
   let total = 0
 
   dataTrans.forEach((item) => {
@@ -40,14 +49,6 @@ export default function IncomeTransaction() {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
-  const [datas] = useState(DataTransaction)
-
-  const [DummyProduct] = useState(Dummytransactions)
-
-  //   DummyProduct.forEach((item) => {
-  //     total += item?.price
-  // })
 
   return (
     <>
@@ -84,40 +85,6 @@ export default function IncomeTransaction() {
             </div>
           </div>
         </div>
-        {/* <div className=''>
-                <div className='detailTransaction py-2 px-2 d-flex'>
-                    <div className=''>
-                        <div className='d-flex justify-content-center'>
-                            <div className='justify-content-center'>
-                              <p className='float-center'>
-                                <img className='img-drink justify-content-center' src={Icecoffegreentea} />
-                              </p>
-                            </div>
-                            <div className='ms-4'>
-                                <h4 style={{color :"#BD0707"}}>Ice coffe palm sugar</h4>
-                                <p className='text-danger'> <strong>Saturday</strong>, 5 march 2020</p>
-                                <p className='text-danger'> Toping &nbsp; : Bill Berry Boba, Bubble Tea Gelatin</p>
-                                <p className='text-danger'>Price : Rp.33.000</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='ms-4'>
-                        <div className='mb-2'>
-                            <img src={Logowaysbuck} style={{
-                              width: '48.04px',
-                              height: '47.75px'
-                            }} />
-                        </div>
-                            <img src={Qrcode} className='mt-2' style={{
-                              height: '74px;',
-                              width: '74px'
-                            }} />
-                        <div className='mt-2 ms-2'>
-                            <span>on the wayt</span>
-                        </div>
-                    </div>
-                </div>
-            </div> */}
       </Modal>
       <NavbarAdmin />
       <div className='title-product mb-5 mt-5'>
@@ -136,14 +103,14 @@ export default function IncomeTransaction() {
             </tr>
           </thead>
           <tbody>
-            {datas.map(data => (
+            {dataUsers.map((item,index) => (
               <tr>
-                <td>{data.no}</td>
-                <td>{data.name}</td>
-                <td>{data.address}</td>
-                <td>{data.postcode}</td>
-                <td className='income'><p onClick={handleShow} style={{ cursor: 'pointer' }}>{data.income}</p></td>
-                <td className={`status-transaction-${data.status}`}>{data.status}</td>
+                <td>{item?.id}</td>
+                <td>{item?.fullname}</td>
+                <td>{item.profile?.address}</td>
+                <td>{item.profile?.postcode}</td>
+                <td className='income'><p onClick={handleShow} style={{ cursor: 'pointer' }}>{item.transaction?.amount}</p></td>
+                <td className={`status-transaction-${item.transaction?.status}`}>{item.transaction?.status}</td>
               </tr>
             ))}
           </tbody>

@@ -9,6 +9,7 @@ import (
 type CartRepository interface {
 	FindCarts(ID int) ([]models.Cart, error)
 	FindToppingsById(ToppingID []int) ([]models.Topping, error)
+	GetTransactionID(ID int) (models.Transaction, error)
 	GetCart(ID int) (models.Cart, error)
 	CreateCart(cart models.Cart) (models.Cart, error)
 	UpdateCart(cart models.Cart) (models.Cart, error)
@@ -31,6 +32,12 @@ func (r *repository) FindToppingsById(ToppingID []int) ([]models.Topping, error)
 	err := r.db.Find(&toppings, ToppingID).Error
 
 	return toppings, err
+}
+
+func (r *repository) GetTransactionID(ID int) (models.Transaction, error) {
+	var transaction models.Transaction
+	err := r.db.Find(&transaction, "user_id =? AND status = ?", ID, "Active").Error
+	return transaction, err
 }
 
 func (r *repository) GetCart(ID int) (models.Cart, error) {

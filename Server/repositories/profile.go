@@ -7,7 +7,7 @@ import (
 )
 
 type ProfileRepository interface {
-	FindProfile() ([]models.Profile, error)
+	FindProfile(ID int) ([]models.Profile, error)
 	GetProfile(ID int) (models.Profile, error)
 	CreateProfile(profile models.Profile) (models.Profile, error)
 	UpdateProfile(profile models.Profile) (models.Profile, error)
@@ -18,9 +18,9 @@ func RepositoryProfile(db *gorm.DB) *repository {
 	return &repository{db}
 }
 
-func (r *repository) FindProfile() ([]models.Profile, error) {
+func (r *repository) FindProfile(ID int) ([]models.Profile, error) {
 	var profiles []models.Profile
-	err := r.db.Preload("User").Find(&profiles).Error
+	err := r.db.Preload("User").Find(&profiles, "user_id = ?", ID).Error
 
 	return profiles, err
 }

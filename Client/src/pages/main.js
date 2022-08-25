@@ -17,6 +17,7 @@ export default function Main() {
 
   
   const [dataproduct, setDataproduct] = useState([]);
+  const [dataCart, setDataCart] = useState([]);
 
   useEffect(() => {
     const dataproduct = async () => {
@@ -30,13 +31,21 @@ export default function Main() {
     dataproduct();
   }, [setDataproduct]);
 
+  useEffect(() => {
+    const dataCart = async () => {
+        try {
+            const response = await API.get("/carts")
+            setDataCart(response.data.data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    dataCart();
+}, [setDataCart]);
+
   return (
     <>
-      <div className='navbar ms-5 me-5 '>
-        <div className='auth '>
-        <NavbarUser/>
-        </div>
-      </div>
+        <NavbarUser plusOne={dataCart.length}/>
         <div className=''>
                   <Card id='card-main'>
                   <div className='card-name'>

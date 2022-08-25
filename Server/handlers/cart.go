@@ -114,10 +114,12 @@ func (h *handlerCart) CreateCart(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	transaction, err := h.CartRepository.GetTransactionID(userId)
+
 	requestForm := models.Cart{
 		ProductId:     request.ProductId,
 		ToppingID:     request.ToppingID,
-		TransactionId: request.TransactionId,
+		TransactionId: int(transaction.ID),
 		Qty:           request.Qty,
 		SubAmount:     request.SubAmount,
 		UserID:        userId,
@@ -137,7 +139,7 @@ func (h *handlerCart) CreateCart(w http.ResponseWriter, r *http.Request) {
 	cart := models.Cart{
 		ProductId:     request.ProductId,
 		Topping:       topping,
-		TransactionId: request.TransactionId,
+		TransactionId: int(transaction.ID),
 		Qty:           request.Qty,
 		SubAmount:     request.SubAmount,
 		UserID:        userId,
@@ -150,8 +152,6 @@ func (h *handlerCart) CreateCart(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 		return
 	}
-
-	cart, _ = h.CartRepository.GetCart(cart.ID)
 
 	w.WriteHeader(http.StatusOK)
 	response := dto.SuccessResult{Code: http.StatusOK, Data: cart}

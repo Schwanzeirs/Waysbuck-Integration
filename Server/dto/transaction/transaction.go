@@ -13,3 +13,9 @@ type TransactionResponse struct {
 	UserID int    `json:"user_id" gorm:"type: int"`
 	Amount int    `json:"amount" gorm:"type: int"`
 }
+
+type UpdateTransaction struct {
+	UserID int    `json:"user_id" form:"user_id"`
+	Status string `json:"status"`
+	Amount int    `json:"amount"`
+}

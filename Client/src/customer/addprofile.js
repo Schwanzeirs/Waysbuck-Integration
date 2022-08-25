@@ -47,6 +47,7 @@ export default function Addprofile() {
         formData.set('phone', form.phone)
         formData.set('address', form.address)
         formData.set('gender', form.gender)
+        formData.set('postcode', form.postcode)
         formData.set('image', form.image[0], form.image[0].name)
 
         console.log(form);
@@ -84,6 +85,9 @@ export default function Addprofile() {
                       <Form.Group className=" mt-4" controlId="formBasicEmail">
                           <Form.Control className='inputProduct' name='address' type="text" onChange={handleOnChange} placeholder="Address" />
                       </Form.Group>
+                      <Form.Group className=" mt-4" controlId="formBasicEmail">
+                          <Form.Control className='inputProduct' name='postcode' type="text" onChange={handleOnChange} placeholder="Postcode" />
+                      </Form.Group>
                       <Form.Group className="mb-5" >
                             <input
                             type="file"
@@ -98,7 +102,7 @@ export default function Addprofile() {
                             <Form.Control className="inputProduct" type="text" value={preview} placeholder="Profile Picture" />
                         </Form.Group>                     
                       <Button className='button-addProduct justify-content-center mt-3' variant="danger" type="submit">
-                          Add Toping
+                          Add Profile
                       </Button>
                   </Form>
               </div>

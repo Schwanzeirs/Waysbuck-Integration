@@ -27,7 +27,7 @@ export default function DetailProduct() {
     dataProduct();
   }, []);
 
-  const [dataTrans, setDataTrans] = useState([])
+  const [dataTrans, setDataTrans] = useState()
 
   const dataCrans = async () => {
     try {
@@ -40,8 +40,6 @@ export default function DetailProduct() {
   useEffect(() => {
     dataCrans();
   }, []);
-
-  let trans = dataTrans
 
 
   const [checkedState, setCheckedState] = useState(
@@ -110,15 +108,17 @@ export default function DetailProduct() {
           "Content-type": "application/json",
         },
       };
+
+      await API.post("/transaction", config);
+
       const body = JSON.stringify({
         sub_amount: amount,
         qty: qty,
-        transaction_id: qty,
         topping_id: topping_id,
         product_id: parseInt(params.id),
       });
 
-      await API.post("/cart", body, config)
+      await API.post("/cart", body, config);
 
       Navigate("/");
     } catch (error) {
