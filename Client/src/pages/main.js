@@ -34,7 +34,7 @@ export default function Main() {
   useEffect(() => {
     const dataCart = async () => {
         try {
-            const response = await API.get("/carts")
+            const response = await API.get("/carts-id")
             setDataCart(response.data.data);
         } catch (error) {
             console.log(error);

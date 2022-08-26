@@ -242,6 +242,26 @@ func (h *handlerCart) DeleteCart(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
+func (h *handlerCart) FindCartsByTrans(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+
+	transaction, err := h.CartRepository.GetIDTransaction()
+	cart, err := h.CartRepository.FindCartsTransaction(int(transaction.ID))
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		response := dto.ErrorResult{Code: http.StatusBadRequest, Message: err.Error()}
+		json.NewEncoder(w).Encode(response)
+	}
+
+	for i, t := range cart {
+		cart[i].Product.Image = transimg + t.Product.Image
+	}
+
+	w.WriteHeader(http.StatusOK)
+	response := dto.SuccessResult{Code: http.StatusOK, Data: cart}
+	json.NewEncoder(w).Encode(response)
+}
+
 func convertResponseCart(t models.Cart) cartdto.CartResponse {
 	return cartdto.CartResponse{
 		ID:            t.ID,

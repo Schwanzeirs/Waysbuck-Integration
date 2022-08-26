@@ -28,7 +28,7 @@ export default function Profile() {
   useEffect(() => {
     const dataCart = async () => {
       try {
-        const response = await API.get("/carts");
+        const response = await API.get("/carts-id");
         setDataCart(response.data.data)
       } catch (error) {
         console.log(error);
@@ -44,12 +44,6 @@ export default function Profile() {
   const moveTodEditprofile = () => {
     moving(`/editprofile`)
   }
-
-  let total = 0
-
-  dataCart.forEach((item) => {
-    total += item?.sub_amount
-  })
 
   const [dataprofile, setDataprofile] = useState([]);
 
@@ -100,7 +94,7 @@ export default function Profile() {
         <div className='myTransaction'>
           <h2 className=''>My Transaction</h2>
           {dataTrans.map((item,index) => (
-          <div key={index} className='d-flex rounded'>
+          <div key={index} className='d-flex rounded mb-4'>
             <div className='detailTransaction py-2 px-2'>
               {item.cart.map((itm, idx) => (
                 <div key={idx} className='d-flex'>
@@ -127,7 +121,7 @@ export default function Profile() {
                 <span>{item?.status}</span>
               </div>
               <div className='mt-2 ms-2'>
-                <span>{Rp.convert(total)}</span>
+                <span>{Rp.convert(item?.amount)}</span>
               </div>
             </div>
           </div>

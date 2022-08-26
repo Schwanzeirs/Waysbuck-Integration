@@ -18,7 +18,7 @@ export default function IncomeTransaction() {
   useEffect(() => {
     const dataTrans = async () => {
       try {
-        const response = await API.get("/carts")
+        const response = await API.get("/carts-id")
         setDataTrans(response.data.data)
       } catch (error) {
         console.log(error);
