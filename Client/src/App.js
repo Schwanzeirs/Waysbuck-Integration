@@ -26,12 +26,12 @@ function App() {
   const [state, dispatch] = useContext(Usercontext)
 
  useEffect(() => {
-   if (state.isLogin === false) {
+   if (state.isLogin == false) {
      navigate('/');
    } else {
-     if (state.user.status === 'admin') {
-      navigate('admin');
-     } else if (state.user.status === 'customer') {
+     if (state.user.status == 'admin') {
+      navigate('/admin');
+     } else if (state.user.status == 'customer') {
        navigate('/main');
      }
    }

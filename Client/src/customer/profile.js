@@ -36,7 +36,7 @@ export default function Profile() {
     };
     dataCart();
   }, [setDataCart]);
-  
+
   const moving = useNavigate()
   const moveTodAddprofile = () => {
     moving(`/addprofile`)
@@ -93,38 +93,38 @@ export default function Profile() {
         </div>
         <div className='myTransaction'>
           <h2 className=''>My Transaction</h2>
-          {dataTrans.map((item,index) => (
-          <div key={index} className='d-flex rounded mb-4'>
-            <div className='detailTransaction py-2 px-2'>
-              {item.cart.map((itm, idx) => (
-                <div key={idx} className='d-flex'>
-                  <div>
-                    <img className='img-drink'src={`http://localhost:5000/uploads/`+ itm.product?.image}/>
+          {dataTrans.map((item, index) => (
+            <div key={index} className='d-flex rounded mb-4'>
+              <div className='detailTransaction py-2 px-2'>
+                {item.cart.map((itm, idx) => (
+                  <div key={idx} className='d-flex'>
+                    <div>
+                      <img className='img-drink' src={`http://localhost:5000/uploads/` + itm.product?.image} />
+                    </div>
+                    <div className='ms-3'>
+                      <h4 style={{ color: "#BD0707" }}>{itm.product?.title}</h4>
+                      {/* <p className='text-danger'> <strong>{item?.day}</strong>, {item?.date}</p> */}
+                      {itm.topping.map((topping, inx) => (
+                        <p key={inx} className='text-danger'> Toping &nbsp; : {topping?.title}</p>
+                      ))}
+                      <p className='text-danger'>Price : {Rp.convert(itm?.sub_amount)}</p>
+                    </div>
                   </div>
-                  <div className='ms-3'>
-                    <h4 style={{ color: "#BD0707" }}>{itm.product?.title}</h4>
-                    {/* <p className='text-danger'> <strong>{item?.day}</strong>, {item?.date}</p> */}
-                    {itm.topping.map((topping, inx) => (
-                      <p key={inx} className='text-danger'> Toping &nbsp; : {topping?.title}</p>
-                    ))}
-                    <p className='text-danger'>Price : {Rp.convert(itm?.sub_amount)}</p>
-                  </div>
+                ))}
+              </div>
+              <div className='ms-4 py-2 px-2'>
+                <div className='mb-2'>
+                  <img src={Logowaysbuck} />
                 </div>
-              ))}
-            </div>
-            <div className='ms-4 py-2 px-2'>
-              <div className='mb-2'>
-                <img src={Logowaysbuck} />
-              </div>
-              <img src={Qrcode} />
-              <div className='mt-2 ms-2'>
-                <span>{item?.status}</span>
-              </div>
-              <div className='mt-2 ms-2'>
-                <span>{Rp.convert(item?.amount)}</span>
+                <img src={Qrcode} />
+                <div className='mt-2 ms-2'>
+                  <span>{item?.status}</span>
+                </div>
+                <div className='mt-2 ms-2'>
+                  <span>{Rp.convert(item?.amount)}</span>
+                </div>
               </div>
             </div>
-          </div>
           ))}
         </div>
       </div>
